@@ -1,23 +1,6 @@
 import { PropertyRepository } from "./property.respository.js";
 import { Property, Review } from "../property.model.js";
 import { db } from "../../mock-data.js";
-import { mapReviewFromApiToModel } from "#pods/property/property.mappers.js";
-
-// const insertProperty = (property: Property) => {
-//   const _id = new ObjectId();
-//   const newProperty: Property = {
-//     ...property,
-//     _id,
-//   };
-
-//   db.properties = [...db.properties, newProperty];
-//   return newProperty;
-// };
-
-// const updateProperty = (property: Property) => {
-//   db.properties = db.properties.map((b) => (b._id.toHexString() === property._id.toHexString() ? { ...b, ...property } : b));
-//   return property;
-// };
 
 const paginatePropertyList = (
   propertyList: Property[],
@@ -52,10 +35,4 @@ export const mockRepository: PropertyRepository = {
     db.properties[foundIndex].reviews = [newReview, ...reviews];
     return newReview;
   },
-
-  // deleteProperty: async (id: string) => {
-  //   const exists = db.properties.some((b) => b._id.toHexString() === id);
-  //   db.properties = db.properties.filter((b) => b._id.toHexString() !== id);
-  //   return exists;
-  // },
 };

@@ -4,15 +4,19 @@ import * as apiModel from "./property.api-model.js";
 export const mapReviewFromModelToApi = (
   review: model.Review
 ): apiModel.Review => {
-  return {
-    id: review._id,
-    reviewer_name: review.reviewer_name,
-    date: review.date?.toISOString(),
-    comments: review.comments,
-  };
+  if (review !== null || undefined) {
+    return {
+      id: review._id,
+      reviewer_name: review.reviewer_name,
+      date: review.date?.toISOString(),
+      comments: review.comments,
+    };
+  } else {
+    [];
+  }
 };
 
-const mapReviewListFromModelToApi = (
+export const mapReviewListFromModelToApi = (
   reviewList: model.Review[]
 ): apiModel.Review[] =>
   Array.isArray(reviewList)
@@ -42,30 +46,11 @@ export const mapPropertyListFromModelToApi = (
 
 export const mapReviewFromApiToModel = (
   review: apiModel.Review
-): model.Review => ({
-  _id: review.id,
-  reviewer_name: review.reviewer_name,
-  date: new Date(),
-  comments: review.comments,
-});
-
-// export const mapPropertyFromApiToModel = (property: apiModel.Property): model.Property => ({
-//     _id: new ObjectId(property.id),
-//     name: property.name,
-//     description: property.description,
-//     images: {
-//       picture_url: property.images,
-//     },
-//     address: property.address,
-//     bedrooms: property.bedrooms,
-//     beds: property.beds,
-//     bathrooms: property.bathrooms,
-//     reviews: property.reviews
-// });
-
-// export const mapPropertyListFromApiToModel = (
-//   propertyList: apiModel.Property[]
-// ): model.Property[] =>
-//   Array.isArray(propertyList)
-//     ? propertyList.map(mapPropertyFromApiToModel)
-//     : [];
+): model.Review => {
+    return {
+      _id: review.id || "",
+      reviewer_name: review.reviewer_name,
+      date: new Date(),
+      comments: review.comments,
+    };
+};

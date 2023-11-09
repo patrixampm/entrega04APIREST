@@ -7,9 +7,6 @@ import {
   mapReviewFromModelToApi
 } from "./property.mappers.js";
 import { Review } from "#dals/index.js";
-import * as apiModel from './property.api-model.js';
-
-// TODO: Añadir Login
 
 export const propertyApi = Router();
 
@@ -49,16 +46,3 @@ propertyApi
       next(error);
     }
   })
-
-
-  /* Este Delete es para pasarlo a la parte opcional, aqui es dodne hay que securizarlo
-  .delete("/:id", async (req, res, next) => {
-    try {
-      const { id } = req.params;
-      const isDeleted = await propertyRepository.deleteProperty(id);
-      res.sendStatus(isDeleted ? 204 : 404);
-    } catch (error) {
-      next(error);
-    }
-  });
-  */
