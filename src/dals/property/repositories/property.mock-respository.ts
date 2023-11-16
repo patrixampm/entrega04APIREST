@@ -1,6 +1,27 @@
+import { ObjectId } from "mongodb";
 import { PropertyRepository } from "./property.respository.js";
 import { Property, Review } from "../property.model.js";
 import { db } from "../../mock-data.js";
+
+const insertProperty = (property: Property) => {
+  const _id = new ObjectId();
+  const newProperty: Property = {
+    ...property,
+    _id,
+  };
+
+  db.properties = [...db.properties, newProperty];
+  return newProperty;
+};
+
+const updateProperty = (property: Property) => {
+  db.properties = db.properties.map((b) =>
+    b._id.toHexString() === property._id.toHexString()
+      ? { ...b, ...property }
+      : b
+  );
+  return property;
+};
 
 const paginatePropertyList = (
   propertyList: Property[],
@@ -35,4 +56,10 @@ export const mockRepository: PropertyRepository = {
     db.properties[foundIndex].reviews = [newReview, ...reviews];
     return newReview;
   },
+  saveProperty: async (property: Property) =>
+    db.properties.some(
+      (b) => b._id.toHexString() === property._id.toHexString()
+    )
+      ? updateProperty(property)
+      : insertProperty(property),
 };

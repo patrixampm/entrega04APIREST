@@ -1,4 +1,33 @@
-import { db } from '#core/servers/index.js';
-import { Property } from './property.model.js';
+import { Schema, model } from "mongoose";
+import { Property } from "./property.model.js";
 
-export const getPropertyContext = () => db?.collection<Property>('listingsAndReviews');
+const imageSchema = new Schema({
+  picture_url: { type: Schema.Types.String },
+});
+
+const addressSchema = new Schema({
+  street: { type: Schema.Types.String },
+});
+
+const reviewSchema = new Schema({
+  reviewer_name: { type: Schema.Types.String },
+  date: { type: Schema.Types.Date },
+  comments: { type: Schema.Types.String },
+});
+
+const propertySchema = new Schema({
+  name: { type: Schema.Types.String },
+  description: { type: Schema.Types.String },
+  images: { type: imageSchema },
+  address: { type: addressSchema },
+  bedrooms: { type: Schema.Types.Number },
+  beds: { type: Schema.Types.Number },
+  bathrooms: { type: Schema.Types.Number },
+  reviews: [{ type: reviewSchema }],
+});
+
+export const propertyContext = model<Property>(
+  "ListingsAndReviews",
+  propertySchema,
+  "listingsAndReviews"
+);

@@ -9,6 +9,7 @@ import {
 import { createRestApiServer, connectToDBServer } from "#core/servers/index.js";
 import { envConstants } from "#core/constants/index.js";
 import { propertyApi } from "#pods/property/index.js";
+import { securityApi, authenticationMiddleware } from '#pods/security/index.js';
 
 const restApiServer = createRestApiServer();
 
@@ -18,7 +19,8 @@ restApiServer.use("/", express.static(staticFilesPath));
 
 restApiServer.use(logRequestMiddleware);
 
-restApiServer.use("/api/property", propertyApi);
+restApiServer.use('/api/security', securityApi);
+restApiServer.use('/api/property', authenticationMiddleware, propertyApi);
 
 restApiServer.use(logErrorRequestMiddleware);
 

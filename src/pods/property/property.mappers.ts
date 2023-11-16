@@ -1,5 +1,6 @@
 import * as model from "#dals/index.js";
 import * as apiModel from "./property.api-model.js";
+import { ObjectId } from 'mongodb';
 
 export const mapReviewFromModelToApi = (
   review: model.Review
@@ -29,7 +30,7 @@ export const mapPropertyFromModelToApi = (
   id: property._id.toHexString(),
   name: property.name,
   description: property.description,
-  images: property.images.picture_url,
+  images: property.images?.picture_url,
   address: property.address,
   bedrooms: property.bedrooms,
   beds: property.beds,
@@ -48,9 +49,30 @@ export const mapReviewFromApiToModel = (
   review: apiModel.Review
 ): model.Review => {
     return {
-      _id: review.id || "",
+      _id: review.id,
       reviewer_name: review.reviewer_name,
       date: new Date(),
       comments: review.comments,
     };
 };
+
+export const mapReviewListFromApiToModel = (
+  reviewList: apiModel.Review[]
+): model.Review[] =>
+  Array.isArray(reviewList)
+    ? reviewList.map((review) => mapReviewFromApiToModel(review))
+    : [];
+
+export const mapPropertyFromApiToModel = (property: apiModel.Property): model.Property => ({
+    _id: new ObjectId(property.id),
+    name: property.name,
+    description: property.description,
+    images: {
+      picture_url: property.images,
+    },
+    address: property.address,
+    bedrooms: property.bedrooms,
+    beds: property.beds,
+    bathrooms: property.bathrooms,
+    reviews: mapReviewListFromApiToModel(property.reviews),
+});

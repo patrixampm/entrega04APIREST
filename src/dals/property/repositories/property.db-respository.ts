@@ -1,37 +1,52 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 import { PropertyRepository } from "./property.respository.js";
-import { Review } from "../property.model.js";
-import { getPropertyContext } from '../property.context.js';
+import { Property, Review } from "../property.model.js";
+import { propertyContext } from "../property.context.js";
 
 export const dbRepository: PropertyRepository = {
-  getPropertyList: async (country?: string, page?: number, pageSize?: number) => {
-    const skip = Boolean(page) ? (page - 1) * pageSize : 0;
-    const limit = pageSize ?? 6;
-    const result = await getPropertyContext()
-    .find({
-      "address.country": country,
-    },{
-      projection: {
-        name: 1,
-        images: 1,
-      }
-    })
-    .skip(skip)
-    .limit(limit)
-    .toArray();
-    return result;
+  getPropertyList: async (
+    country: string,
+    page?: number,
+    pageSize?: number
+  ) => {
+    if (page && pageSize) {
+      const skip = Boolean(page) ? (page - 1) * pageSize : 0;
+      return await propertyContext
+        .find({ "address.country": country })
+        .select({
+          name: 1,
+          images: 1,
+        })
+        .skip(skip)
+        .limit(pageSize)
+        .lean();
+    }
+    return await propertyContext.find({ "address.country": country }).lean();
   },
   getProperty: async (id: string) => {
-    return await getPropertyContext().findOne({
-      _id: new ObjectId(id),
-    });
+    return await propertyContext
+      .findOne({
+        _id: new ObjectId(id),
+      })
+      .lean();
   },
   insertReview: async (propertyId: string, newReview: Review) => {
-    const property = await getPropertyContext().findOneAndUpdate(
+    const property = await propertyContext.findOneAndUpdate(
       { _id: new ObjectId(propertyId) },
       { $push: { reviews: {$each: [newReview], $position: 0} } },
-      { upsert: true, returnDocument: 'after' }
-    );
+      { new: true, upsert: true, returnDocument: 'after' }
+    ).lean();
     return newReview;
+  },
+  saveProperty: async (property: Property) => {
+    return await propertyContext
+      .findOneAndUpdate(
+        {
+          _id: property._id,
+        },
+        { $set: property },
+        { upsert: true, returnDocument: 'after' }
+      )
+      .lean();
   },
 };
