@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   airbnb-properties-db:
-    container_name: airbnb-mongodb
+    container_name: airbnb-mongodb-deploy
     image: mongo:7
     ports:
       - '27017:27017'
