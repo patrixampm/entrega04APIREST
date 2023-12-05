@@ -1,0 +1,9 @@
+node_modules
+dist
+mongo-data
+.env
+.env.example
+.gitignore
+docker-compose.yml
+globalConfig.json
+config
